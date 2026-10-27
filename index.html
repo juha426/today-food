@@ -660,6 +660,54 @@
       }
     }
     
+
+.year-trend-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+.year-trend-group {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: white;
+}
+.cheaper-group { background: linear-gradient(135deg, #edf5e9, #fbfcf8); }
+.expensive-group { background: linear-gradient(135deg, #fff3e8, #fffaf6); }
+.year-trend-group-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.year-trend-group-heading h3 { margin: 0; font-size: 18px; }
+.year-trend-group-heading p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+.year-trend-group .year-trend-feature { margin-top: 0; padding: 18px; }
+.year-trend-group .year-trend-product { grid-template-columns: 88px minmax(0, 1fr); gap: 15px; }
+.year-trend-group .year-trend-emoji { width: 88px; height: 88px; font-size: 42px; }
+.year-trend-group .year-trend-name { font-size: 20px; }
+.year-trend-group .year-trend-price { font-size: 22px; }
+.year-trend-group .year-trend-list { grid-template-columns: 1fr; }
+.year-trend-group .year-trend-change.up { color: #b84235; }
+.year-trend-group .year-trend-change.down { color: #2676bd; }
+@media (max-width: 900px) {
+  .year-trend-groups { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .year-trend-section { padding: 16px; }
+  .year-trend-group { padding: 14px; }
+  .year-trend-group-heading { align-items: flex-start; }
+  .year-trend-group-heading h3 { font-size: 16px; }
+  .year-trend-group .year-trend-feature { padding: 13px; }
+  .year-trend-group .year-trend-product { grid-template-columns: 68px minmax(0, 1fr); gap: 12px; }
+  .year-trend-group .year-trend-emoji { width: 68px; height: 68px; font-size: 34px; }
+  .year-trend-group .year-trend-name { font-size: 18px; }
+  .year-trend-group .year-trend-price { font-size: 19px; }
+}
+
 /* 이 상품은 어때요? */
 .year-trend-section {
   margin: 28px 0;
@@ -958,34 +1006,64 @@
   <div class="year-trend-heading">
     <div>
       <h2>이 상품은 어때요?</h2>
-      <p>작년 가격과 비교해 확인하는 오늘의 장보기 정보</p>
+      <p>작년 가격과 비교해 싸진 상품과 비싸진 상품을 확인해 보세요.</p>
     </div>
-    <button type="button" id="yearTrendToggle"
-      class="year-trend-toggle" aria-expanded="false">
-      전체 보기 <span id="yearTrendToggleIcon">⌄</span>
-    </button>
   </div>
 
-  <div class="year-trend-feature" id="yearTrendFeature">
-    <div id="yearTrendMainCard"></div>
-
-    <div class="year-trend-controls">
-      <span id="yearTrendCounter">0 / 0</span>
-      <div class="year-trend-arrows">
-        <button type="button" id="yearTrendPrev"
-          aria-label="이전 상품">‹</button>
-        <button type="button" id="yearTrendNext"
-          aria-label="다음 상품">›</button>
+  <div class="year-trend-groups">
+    <section class="year-trend-group cheaper-group">
+      <div class="year-trend-group-heading">
+        <div>
+          <h3>📉 작년보다 싸졌어요</h3>
+          <p>작년보다 가격이 낮아진 상품</p>
+        </div>
+        <button type="button" id="cheaperToggle" class="year-trend-toggle"
+          aria-expanded="false">전체 보기⌄</button>
       </div>
-    </div>
-  </div>
+      <div class="year-trend-feature">
+        <div id="cheaperMainCard"></div>
+        <div class="year-trend-controls">
+          <span id="cheaperCounter">0 / 0</span>
+          <div class="year-trend-arrows">
+            <button type="button" id="cheaperPrev" aria-label="이전 저렴한 상품">‹</button>
+            <button type="button" id="cheaperNext" aria-label="다음 저렴한 상품">›</button>
+          </div>
+        </div>
+      </div>
+      <div class="year-trend-expanded" id="cheaperExpanded" hidden>
+        <div class="year-trend-list-heading">
+          <h3>싸진 상품 전체</h3><span id="cheaperTotal"></span>
+        </div>
+        <div id="cheaperList" class="year-trend-list"></div>
+      </div>
+    </section>
 
-  <div class="year-trend-expanded" id="yearTrendExpanded" hidden>
-    <div class="year-trend-list-heading">
-      <h3>추천 상품 전체</h3>
-      <span id="yearTrendTotal"></span>
-    </div>
-    <div id="yearTrendList" class="year-trend-list"></div>
+    <section class="year-trend-group expensive-group">
+      <div class="year-trend-group-heading">
+        <div>
+          <h3>📈 작년보다 비싸졌어요</h3>
+          <p>작년보다 가격이 높아진 상품</p>
+        </div>
+        <button type="button" id="expensiveToggle" class="year-trend-toggle"
+          aria-expanded="false">전체 보기⌄</button>
+      </div>
+      <div class="year-trend-feature">
+        <div id="expensiveMainCard"></div>
+        <div class="year-trend-controls">
+          <span id="expensiveCounter">0 / 0</span>
+          <div class="year-trend-arrows">
+            <button type="button" id="expensivePrev" aria-label="이전 비싼 상품">‹</button>
+            <button type="button" id="expensiveNext" aria-label="다음 비싼 상품">›</button>
+          </div>
+        </div>
+      </div>
+      <div class="year-trend-expanded" id="expensiveExpanded" hidden>
+        <div class="year-trend-list-heading">
+          <h3>비싸진 상품 전체</h3><span id="expensiveTotal"></span>
+        </div>
+        <div id="expensiveList" class="year-trend-list"></div>
+      </div>
+    </section>
   </div>
 </section>
 
@@ -1413,14 +1491,24 @@ function getYearPriceDropItems() {
     }
 
     
-let yearTrendIndex = 0;
-let yearTrendExpanded = false;
-let yearTrendTimer = null;
+const trendGroupState = {
+  cheaper: { index: 0, expanded: false },
+  expensive: { index: 0, expanded: false }
+};
 
 function formatYearTrendPrice(value) {
   const price = parsePrice(value);
-  return price === null ? "가격 정보 없음" :
-    `${price.toLocaleString("ko-KR")}원`;
+  return price === null ? "가격 정보 없음" : `${price.toLocaleString("ko-KR")}원`;
+}
+
+function escapeYearTrendText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
 }
 
 function renderYearTrendProduct(item) {
@@ -1437,191 +1525,122 @@ function renderYearTrendProduct(item) {
 
   return `
     <div class="year-trend-product">
-      <div class="year-trend-emoji">${item.emoji || "🥬"}</div>
+      <div class="year-trend-emoji" aria-hidden="true">${item.emoji || "🥬"}</div>
       <div class="year-trend-info">
-        <div class="year-trend-category">
-          ${item.category || "식재료"} · ${row.grade || "등급 정보 없음"}
-        </div>
-        <h3 class="year-trend-name">${escapeYearTrendText(item.name)}</h3>
+        <div class="year-trend-category">${escapeYearTrendText(item.category || "식재료")} · ${escapeYearTrendText(row.grade || "등급 정보 없음")}</div>
+        <h4 class="year-trend-name">${escapeYearTrendText(item.name)}</h4>
         <div class="year-trend-price">
-          ${formatYearTrendPrice(price)}
+          ${price === null ? "가격 정보 없음" : formatYearTrendPrice(price)}
           <span class="year-trend-unit">${escapeYearTrendText(unit)}</span>
         </div>
         <div class="year-trend-change ${changeClass}">${changeText}</div>
         <span class="year-trend-label">작년 가격 ${formatYearTrendPrice(row.priceYearAgo)}</span>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-function escapeYearTrendText(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
-}
-
-function renderYearTrendList(items) {
-  const list = document.getElementById("yearTrendList");
-  const total = document.getElementById("yearTrendTotal");
-
+function renderYearTrendList(items, key) {
+  const list = document.getElementById(`${key}List`);
+  const total = document.getElementById(`${key}Total`);
   if (!list || !total) return;
 
   total.textContent = `${items.length}개 상품`;
-
-  list.innerHTML = items.length
-    ? items.map(item => {
-        const row = item.row || {};
-        const rate = Number(item.rate);
-        const direction = rate > 0 ? "상승" : rate < 0 ? "하락" : "변동 없음";
-
-        return `
-          <div class="year-trend-list-item">
-            <div class="year-trend-list-emoji">${item.emoji || "🥬"}</div>
-            <div>
-              <strong>${escapeYearTrendText(item.name)}</strong>
-              <span>${formatYearTrendPrice(getPriceValue(row))}</span>
-              <div class="year-trend-change ${rate > 0 ? "up" : rate < 0 ? "down" : "same"}">
-                작년 대비 ${Math.abs(rate).toFixed(1)}% ${direction}
-              </div>
-            </div>
+  list.innerHTML = items.length ? items.map(item => {
+    const row = item.row || {};
+    const rate = Number(item.rate);
+    const direction = rate > 0 ? "상승" : rate < 0 ? "하락" : "변동 없음";
+    const changeClass = rate > 0 ? "up" : rate < 0 ? "down" : "same";
+    return `
+      <div class="year-trend-list-item">
+        <div class="year-trend-list-emoji" aria-hidden="true">${item.emoji || "🥬"}</div>
+        <div>
+          <strong>${escapeYearTrendText(item.name)}</strong>
+          <span>${formatYearTrendPrice(getPriceValue(row))}</span>
+          <div class="year-trend-change ${changeClass}">
+            작년 대비 ${Math.abs(rate).toFixed(1)}% ${direction}
           </div>
-        `;
-      }).join("")
-    : `<div class="year-trend-empty">표시할 가격 비교 상품이 없습니다.</div>`;
+        </div>
+      </div>`;
+  }).join("") : `<div class="year-trend-empty">표시할 상품이 없습니다.</div>`;
 }
 
-function renderYearPriceTrends() {
-  const mainCard = document.getElementById("yearTrendMainCard");
-  const counter = document.getElementById("yearTrendCounter");
-  const expanded = document.getElementById("yearTrendExpanded");
-  const toggle = document.getElementById("yearTrendToggle");
-  const toggleIcon = document.getElementById("yearTrendToggleIcon");
-  const feature = document.getElementById("yearTrendFeature");
-
-  if (!mainCard || !counter) return;
-
+function getYearTrendItemsByGroup() {
   const items = getYearPriceDropItems()
-    .filter(item => Number.isFinite(Number(item.rate)))
-    .sort((a, b) => Math.abs(b.rate) - Math.abs(a.rate));
+    .filter(item => Number.isFinite(Number(item.rate)));
+
+  return {
+    cheaper: items.filter(item => item.rate < 0).sort((a, b) => a.rate - b.rate),
+    expensive: items.filter(item => item.rate > 0).sort((a, b) => b.rate - a.rate)
+  };
+}
+
+function renderTrendGroup(key, items) {
+  const groupState = trendGroupState[key];
+  const card = document.getElementById(`${key}MainCard`);
+  const counter = document.getElementById(`${key}Counter`);
+  const expanded = document.getElementById(`${key}Expanded`);
+  const toggle = document.getElementById(`${key}Toggle`);
+  if (!card || !counter || !expanded || !toggle) return;
 
   if (!items.length) {
-    mainCard.innerHTML = `
-      <div class="year-trend-empty">
-        비교할 수 있는 작년 가격 데이터가 아직 없습니다.
-      </div>`;
+    card.innerHTML = `<div class="year-trend-empty">${key === "cheaper"
+      ? "작년보다 저렴한 상품 데이터가 없습니다."
+      : "작년보다 비싼 상품 데이터가 없습니다."}</div>`;
     counter.textContent = "0 / 0";
-    if (toggle) toggle.hidden = true;
-    if (expanded) expanded.hidden = true;
+    toggle.hidden = true;
+    expanded.hidden = true;
+    renderYearTrendList([], key);
     return;
   }
 
-  if (toggle) toggle.hidden = false;
-
-  yearTrendIndex = ((yearTrendIndex % items.length) + items.length) % items.length;
-
-  mainCard.innerHTML = renderYearTrendProduct(items[yearTrendIndex]);
-  counter.textContent = `${yearTrendIndex + 1} / ${items.length}`;
-
-  renderYearTrendList(items);
-
-  if (expanded) expanded.hidden = !yearTrendExpanded;
-  if (toggle) {
-    toggle.setAttribute("aria-expanded", String(yearTrendExpanded));
-    toggle.innerHTML = yearTrendExpanded
-      ? '접기 <span id="yearTrendToggleIcon">⌃</span>'
-      : '전체 보기 <span id="yearTrendToggleIcon">⌄</span>';
-  }
-
-  if (feature) feature.hidden = false;
+  toggle.hidden = false;
+  groupState.index = ((groupState.index % items.length) + items.length) % items.length;
+  card.innerHTML = renderYearTrendProduct(items[groupState.index]);
+  counter.textContent = `${groupState.index + 1} / ${items.length}`;
+  expanded.hidden = !groupState.expanded;
+  toggle.setAttribute("aria-expanded", String(groupState.expanded));
+  toggle.textContent = groupState.expanded ? "접기⌃" : "전체 보기⌄";
+  renderYearTrendList(items, key);
 }
 
-function moveYearTrend(direction) {
-  const items = getYearPriceDropItems()
-    .filter(item => Number.isFinite(Number(item.rate)))
-    .sort((a, b) => Math.abs(b.rate) - Math.abs(a.rate));
-
-  if (!items.length) return;
-
-  yearTrendIndex = (yearTrendIndex + direction + items.length) % items.length;
-  renderYearPriceTrends();
+function renderYearPriceTrends() {
+  const groups = getYearTrendItemsByGroup();
+  renderTrendGroup("cheaper", groups.cheaper);
+  renderTrendGroup("expensive", groups.expensive);
 }
 
-function stopYearTrendRolling() {
-  if (yearTrendTimer) {
-    clearInterval(yearTrendTimer);
-    yearTrendTimer = null;
-  }
+function moveYearTrend(key, direction) {
+  const items = getYearTrendItemsByGroup()[key];
+  if (!items || !items.length) return;
+  trendGroupState[key].index =
+    (trendGroupState[key].index + direction + items.length) % items.length;
+  renderTrendGroup(key, items);
 }
 
-function startYearTrendRolling() {
-  stopYearTrendRolling();
-
-  yearTrendTimer = setInterval(() => {
-    if (yearTrendExpanded || document.hidden) return;
-    moveYearTrend(1);
-  }, 5000);
+function toggleYearTrendGroup(key) {
+  trendGroupState[key].expanded = !trendGroupState[key].expanded;
+  renderTrendGroup(key, getYearTrendItemsByGroup()[key]);
 }
 
-document.getElementById("yearTrendPrev")?.addEventListener("click", () => {
-  moveYearTrend(-1);
-  startYearTrendRolling();
+["cheaper", "expensive"].forEach(key => {
+  document.getElementById(`${key}Prev`)?.addEventListener("click", () => moveYearTrend(key, -1));
+  document.getElementById(`${key}Next`)?.addEventListener("click", () => moveYearTrend(key, 1));
+  document.getElementById(`${key}Toggle`)?.addEventListener("click", () => toggleYearTrendGroup(key));
 });
 
-document.getElementById("yearTrendNext")?.addEventListener("click", () => {
-  moveYearTrend(1);
-  startYearTrendRolling();
-});
-
-document.getElementById("yearTrendToggle")?.addEventListener("click", () => {
-  yearTrendExpanded = !yearTrendExpanded;
-  renderYearPriceTrends();
-
-  if (yearTrendExpanded) {
-    stopYearTrendRolling();
-  } else {
-    startYearTrendRolling();
-  }
-});
-
-startYearTrendRolling();
-
-
-      const items = getYearPriceDropItems();
-      const largestDrops = items.filter(item => item.rate < 0)
-        .sort((a, b) => a.rate - b.rate).slice(0, 10);
-      const largestIncreases = items.filter(item => item.rate > 0)
-        .sort((a, b) => b.rate - a.rate).slice(0, 10);
-
-      function fillTrack(track, products, direction) {
-        if (!products.length) {
-          const empty = document.createElement("div");
-          empty.className = "trend-empty";
-          empty.textContent = direction === "down"
-            ? "작년보다 저렴한 상품 데이터가 없습니다."
-            : "작년보다 비싼 상품 데이터가 없습니다.";
-          track.appendChild(empty);
-          return;
-        }
-        products.forEach(item => track.appendChild(createTrendCard(item, direction)));
-      }
-
-      fillTrack(highTrack, largestDrops, "down");
-      fillTrack(lowTrack, largestIncreases, "up");
-    }
-
-    // 가격 추천 카드 좌우 이동 버튼
-    document.querySelectorAll(".trend-prev, .trend-next").forEach(button => {
-      button.addEventListener("click", () => {
-        const track = document.getElementById(button.dataset.target);
-        if (!track) return;
-        const direction = button.classList.contains("trend-next") ? 1 : -1;
-        track.scrollBy({ left: direction * track.clientWidth * 0.8, behavior: "smooth" });
-      });
-    });
+// 두 영역은 각각 5초 간격으로 독립적으로 롤링합니다.
+// 전체 목록이 펼쳐진 영역은 사용자가 읽을 수 있도록 자동 전환하지 않습니다.
+setInterval(() => {
+  if (document.hidden) return;
+  const groups = getYearTrendItemsByGroup();
+  ["cheaper", "expensive"].forEach(key => {
+    if (trendGroupState[key].expanded) return;
+    const items = groups[key];
+    if (!items.length) return;
+    trendGroupState[key].index = (trendGroupState[key].index + 1) % items.length;
+    renderTrendGroup(key, items);
+  });
+}, 5000);
 
     function getChangeInfo(row) {
       if (!row) {
