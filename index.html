@@ -425,14 +425,18 @@
       font-size: 11px;
       white-space: nowrap;
     }
+    /* 한 번에 여러 상품이 보이는 가로 슬라이더 */
     .trend-track.is-single {
-      justify-content: center;
-      overflow: hidden;
+      justify-content: flex-start;
+      overflow-x: auto;
       min-height: 185px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
     }
+    .trend-track.is-single::-webkit-scrollbar { display: none; }
     .trend-track.is-single .trend-card {
-      flex: 0 1 220px;
-      width: min(100%, 220px);
+      flex: 0 0 clamp(125px, 31%, 170px);
+      width: auto;
       animation: trendFadeIn .25s ease;
     }
     .trend-track.is-expanded {
@@ -1174,28 +1178,35 @@ function getYearPriceDropItems() {
     };
     const trendTimers = {};
 
+    const MAX_TREND_ITEMS = 10;
+
     function renderTrendTrack(trackId, items, direction, message) {
       const track = document.getElementById(trackId);
       if (!track) return;
       const slider = trendSliderState[trackId];
-      slider.items = items;
-      if (slider.index >= items.length) slider.index = 0;
+      // 가격 하락/상승 영역별 최대 10개만 사용합니다.
+      slider.items = items.slice(0, MAX_TREND_ITEMS);
+      slider.index = 0;
       track.replaceChildren();
       track.classList.toggle("is-expanded", slider.expanded);
       track.classList.toggle("is-single", !slider.expanded);
-      if (!items.length) {
+      track.scrollLeft = 0;
+
+      if (!slider.items.length) {
         const empty = document.createElement("div");
         empty.className = "trend-empty";
         empty.textContent = message;
         track.appendChild(empty);
-        return;
+      } else {
+        // 접힌 상태에서도 여러 상품을 가로로 보여주고, 좌우로 슬라이드합니다.
+        slider.items.forEach(item => track.appendChild(createTrendCard(item, direction)));
       }
-      const shown = slider.expanded ? items : [items[slider.index]];
-      shown.forEach(item => track.appendChild(createTrendCard(item, direction)));
+
       const viewButton = document.querySelector(`.trend-view-all[data-target="${trackId}"]`);
       if (viewButton) {
-        viewButton.textContent = slider.expanded ? "접기" : `전체 보기 (${items.length})`;
+        viewButton.textContent = slider.expanded ? "접기" : `전체 보기 (${slider.items.length})`;
         viewButton.setAttribute("aria-expanded", String(slider.expanded));
+        viewButton.hidden = slider.items.length <= 1;
       }
     }
 
@@ -1222,21 +1233,38 @@ function getYearPriceDropItems() {
       if (trendTimers[trackId]) clearInterval(trendTimers[trackId]);
       trendTimers[trackId] = setInterval(() => {
         const slider = trendSliderState[trackId];
-        if (!slider || slider.expanded || slider.items.length < 2) return;
-        slider.index = (slider.index + 1) % slider.items.length;
-        const direction = trackId === "trendHighTrack" ? "down" : "up";
-        renderTrendTrack(trackId, slider.items, direction, "비교 가능한 상품이 없습니다.");
+        const track = document.getElementById(trackId);
+        if (!slider || !track || slider.expanded || slider.items.length < 2) return;
+
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        if (maxScroll <= 0) return;
+
+        // 한 번에 카드 2개 정도의 너비만큼 이동해 여러 상품이 계속 보이게 합니다.
+        const firstCard = track.querySelector(".trend-card");
+        const gap = 10;
+        const step = firstCard ? (firstCard.getBoundingClientRect().width + gap) * 2 : track.clientWidth;
+        if (track.scrollLeft + step >= maxScroll - 8) {
+          track.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          track.scrollBy({ left: step, behavior: "smooth" });
+        }
       }, 5000);
     }
 
-    // 좌우 버튼은 각 영역을 독립적으로 이동합니다.
+    // 좌우 버튼은 해당 영역을 가로로 이동합니다.
     document.querySelectorAll(".trend-prev, .trend-next").forEach(button => {
       button.addEventListener("click", () => {
         const trackId = button.dataset.target;
         const slider = trendSliderState[trackId];
-        if (!slider || !slider.items.length) return;
-        slider.index = (slider.index + (button.classList.contains("trend-next") ? 1 : -1) + slider.items.length) % slider.items.length;
-        renderTrendTrack(trackId, slider.items, trackId === "trendHighTrack" ? "down" : "up", "비교 가능한 상품이 없습니다.");
+        const track = document.getElementById(trackId);
+        if (!slider || !track || slider.items.length < 2) return;
+        const firstCard = track.querySelector(".trend-card");
+        const gap = 10;
+        const step = firstCard ? (firstCard.getBoundingClientRect().width + gap) * 2 : track.clientWidth;
+        track.scrollBy({
+          left: (button.classList.contains("trend-next") ? 1 : -1) * step,
+          behavior: "smooth"
+        });
         startTrendTimer(trackId);
       });
     });
@@ -1248,6 +1276,7 @@ function getYearPriceDropItems() {
         if (!slider) return;
         slider.expanded = !slider.expanded;
         renderTrendTrack(trackId, slider.items, trackId === "trendHighTrack" ? "down" : "up", "비교 가능한 상품이 없습니다.");
+        startTrendTimer(trackId);
       });
     });
 
