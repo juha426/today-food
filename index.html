@@ -417,6 +417,37 @@
       background: white;
       border-color: var(--primary);
     }
+    .trend-controls .trend-view-all {
+      width: auto;
+      height: 31px;
+      padding: 0 9px;
+      border-radius: 16px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .trend-track.is-single {
+      justify-content: center;
+      overflow: hidden;
+      min-height: 185px;
+    }
+    .trend-track.is-single .trend-card {
+      flex: 0 1 220px;
+      width: min(100%, 220px);
+      animation: trendFadeIn .25s ease;
+    }
+    .trend-track.is-expanded {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      overflow: visible;
+    }
+    .trend-track.is-expanded .trend-card {
+      width: auto;
+      min-width: 0;
+    }
+    @keyframes trendFadeIn {
+      from { opacity: .35; transform: translateY(3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .trend-track {
       display: flex;
@@ -707,6 +738,7 @@
                     aria-label="가격 하락률이 큰 상품 이전">‹</button>
                   <button type="button" class="trend-next" data-target="trendHighTrack"
                     aria-label="가격 하락률이 큰 상품 다음">›</button>
+                  <button type="button" class="trend-view-all" data-target="trendHighTrack" aria-expanded="false">전체 보기</button>
                 </div>
               </div>
               <div class="trend-track" id="trendHighTrack" aria-live="polite">
@@ -727,6 +759,7 @@
                     aria-label="가격 상승률이 큰 상품 이전">‹</button>
                   <button type="button" class="trend-next" data-target="trendLowTrack"
                     aria-label="가격 상승률이 큰 상품 다음">›</button>
+                  <button type="button" class="trend-view-all" data-target="trendLowTrack" aria-expanded="false">전체 보기</button>
                 </div>
               </div>
               <div class="trend-track" id="trendLowTrack" aria-live="polite">
@@ -736,7 +769,7 @@
 
           </div>
           <p class="trend-notice">
-            KAMIS 가격 기준 · 작년 대비 변동률이 유효한 상품만 표시합니다.
+            KAMIS 가격 기준 · 현재 가격과 작년 가격이 모두 확인되는 상품만 비교합니다. 가격 조사일은 데이터에 포함된 날짜를 표시합니다.
           </p>
         </section>
         <div class="section-heading">
@@ -1064,84 +1097,52 @@ const seasonalFoods = [
 
    
 function getYearPriceDropItems() {
-  if (!state.pricesLoaded || !Array.isArray(state.prices)) {
-    return [];
-  }
+  if (!state.pricesLoaded || !Array.isArray(state.prices)) return [];
 
   const byName = new Map();
-
   state.prices.forEach(row => {
     const name = String(getItemName(row) || "").trim();
     const currentPrice = parsePrice(getPriceValue(row));
-
-    // 작년 가격: JSON에 실제 존재하는 필드 사용
     const yearAgoPrice = parsePrice(
-      row.priceYearAgo ??
-      row.price_year_ago ??
-      row.dpr6 ??
-      row.yearAgoPrice ??
-      row.year_ago_price
+      row.priceYearAgo ?? row.price_year_ago ?? row.dpr6 ??
+      row.yearAgoPrice ?? row.year_ago_price ?? row.priceLastYear ??
+      row.price_last_year
     );
 
-    if (!name || currentPrice === null) return;
+    // 전년 가격이 없는 상품은 pctYear 값만으로 추정하지 않습니다.
+    if (!name || currentPrice === null || yearAgoPrice === null || yearAgoPrice <= 0) return;
 
-    // 1. 저장된 연간 변동률 우선 사용
-    const rawRate = row.pctYear;
-    let rate = null;
-
-    if (
-      rawRate !== null &&
-      rawRate !== undefined &&
-      String(rawRate).trim() !== "" &&
-      Number.isFinite(Number(rawRate))
-    ) {
-      rate = Number(rawRate);
-    } else if (yearAgoPrice !== null && yearAgoPrice > 0) {
-      // 2. 변동률이 없으면 작년 가격으로 계산
-      rate =
-        ((currentPrice - yearAgoPrice) / yearAgoPrice) * 100;
-    }
-
-    // 비교할 자료가 없으면 추천 목록에서 제외
+    const rate = ((currentPrice - yearAgoPrice) / yearAgoPrice) * 100;
     if (!Number.isFinite(rate)) return;
 
     const key = normalizeText(name);
-
+    if (!key) return;
     const item = {
       name,
-      emoji: getFoodEmoji(
-        name,
-        row.category || getCategoryForFood(name)
-      ),
+      emoji: getFoodEmoji(name, row.category || getCategoryForFood(name)),
       category: row.category || getCategoryForFood(name),
       row,
-      rate
+      rate,
+      yearAgoPrice
     };
-
-    // 동일한 상품명은 한 번만 표시
-    if (!byName.has(key)) {
-      byName.set(key, item);
-    }
+    const existing = byName.get(key);
+    // 중복 품목이면 유효한 현재 가격을 가진 첫 항목을 유지합니다.
+    if (!existing) byName.set(key, item);
   });
-
   return Array.from(byName.values());
 }
-
 
     function createTrendCard(item, direction) {
       const card = document.createElement("article");
       card.className = "trend-card";
-
       const emoji = document.createElement("div");
       emoji.className = "trend-emoji";
       emoji.textContent = item.emoji;
       emoji.setAttribute("aria-hidden", "true");
-
       const name = document.createElement("h4");
       name.className = "trend-name";
       name.textContent = item.name;
       name.title = item.name;
-
       const rate = document.createElement("div");
       rate.className = "trend-rate";
       rate.classList.add(direction === "down" ? "down" : "up");
@@ -1149,69 +1150,104 @@ function getYearPriceDropItems() {
       const caption = document.createElement("span");
       caption.textContent = " 작년 대비";
       rate.appendChild(caption);
-
       const price = document.createElement("div");
       price.className = "trend-price";
       const currentPrice = parsePrice(getPriceValue(item.row));
       const unit = item.row.unit ? ` / ${item.row.unit}` : "";
-      price.textContent = currentPrice !== null
-        ? `현재 ${formatPrice(currentPrice)}원${unit}`
-        : "현재 가격 정보 없음";
-
-      card.append(emoji, name, rate, price);
+      const yearAgoPrice = parsePrice(item.yearAgoPrice);
+      price.textContent = `현재 ${formatPrice(currentPrice)}원${unit} · 작년 ${formatPrice(yearAgoPrice)}원`;
+      const date = item.row.asOf ?? item.row.priceDate ?? item.row.price_date ?? item.row.regday ?? item.row.date ?? null;
+      if (date) {
+        const dateLabel = document.createElement("div");
+        dateLabel.className = "trend-price";
+        dateLabel.textContent = `조사일 ${String(date)}`;
+        card.append(emoji, name, rate, price, dateLabel);
+      } else {
+        card.append(emoji, name, rate, price);
+      }
       return card;
+    }
+
+    const trendSliderState = {
+      trendHighTrack: { items: [], index: 0, expanded: false },
+      trendLowTrack: { items: [], index: 0, expanded: false }
+    };
+    const trendTimers = {};
+
+    function renderTrendTrack(trackId, items, direction, message) {
+      const track = document.getElementById(trackId);
+      if (!track) return;
+      const slider = trendSliderState[trackId];
+      slider.items = items;
+      if (slider.index >= items.length) slider.index = 0;
+      track.replaceChildren();
+      track.classList.toggle("is-expanded", slider.expanded);
+      track.classList.toggle("is-single", !slider.expanded);
+      if (!items.length) {
+        const empty = document.createElement("div");
+        empty.className = "trend-empty";
+        empty.textContent = message;
+        track.appendChild(empty);
+        return;
+      }
+      const shown = slider.expanded ? items : [items[slider.index]];
+      shown.forEach(item => track.appendChild(createTrendCard(item, direction)));
+      const viewButton = document.querySelector(`.trend-view-all[data-target="${trackId}"]`);
+      if (viewButton) {
+        viewButton.textContent = slider.expanded ? "접기" : `전체 보기 (${items.length})`;
+        viewButton.setAttribute("aria-expanded", String(slider.expanded));
+      }
     }
 
     function renderYearPriceTrends() {
       const highTrack = $("#trendHighTrack");
       const lowTrack = $("#trendLowTrack");
       if (!highTrack || !lowTrack) return;
-      highTrack.replaceChildren();
-      lowTrack.replaceChildren();
-
       if (!state.pricesLoaded || state.error) {
-        const message = state.error
-          ? "가격 데이터를 확인할 수 없습니다."
-          : "가격 정보를 불러오는 중입니다.";
-        [highTrack, lowTrack].forEach(track => {
-          const empty = document.createElement("div");
-          empty.className = "trend-empty";
-          empty.textContent = message;
-          track.appendChild(empty);
-        });
+        const message = state.error ? "가격 데이터를 확인할 수 없습니다." : "가격 정보를 불러오는 중입니다.";
+        renderTrendTrack("trendHighTrack", [], "down", message);
+        renderTrendTrack("trendLowTrack", [], "up", message);
         return;
       }
-
       const items = getYearPriceDropItems();
-      const largestDrops = items.filter(item => item.rate < 0)
-        .sort((a, b) => a.rate - b.rate).slice(0, 10);
-      const largestIncreases = items.filter(item => item.rate > 0)
-        .sort((a, b) => b.rate - a.rate).slice(0, 10);
-
-      function fillTrack(track, products, direction) {
-        if (!products.length) {
-          const empty = document.createElement("div");
-          empty.className = "trend-empty";
-          empty.textContent = direction === "down"
-            ? "작년보다 저렴한 상품 데이터가 없습니다."
-            : "작년보다 비싼 상품 데이터가 없습니다.";
-          track.appendChild(empty);
-          return;
-        }
-        products.forEach(item => track.appendChild(createTrendCard(item, direction)));
-      }
-
-      fillTrack(highTrack, largestDrops, "down");
-      fillTrack(lowTrack, largestIncreases, "up");
+      const drops = items.filter(item => item.rate < 0).sort((a, b) => a.rate - b.rate);
+      const increases = items.filter(item => item.rate > 0).sort((a, b) => b.rate - a.rate);
+      renderTrendTrack("trendHighTrack", drops, "down", "작년 가격이 확인되는 저렴한 상품이 없습니다.");
+      renderTrendTrack("trendLowTrack", increases, "up", "작년 가격이 확인되는 비싼 상품이 없습니다.");
+      startTrendTimer("trendHighTrack");
+      startTrendTimer("trendLowTrack");
     }
 
-    // 가격 추천 카드 좌우 이동 버튼
+    function startTrendTimer(trackId) {
+      if (trendTimers[trackId]) clearInterval(trendTimers[trackId]);
+      trendTimers[trackId] = setInterval(() => {
+        const slider = trendSliderState[trackId];
+        if (!slider || slider.expanded || slider.items.length < 2) return;
+        slider.index = (slider.index + 1) % slider.items.length;
+        const direction = trackId === "trendHighTrack" ? "down" : "up";
+        renderTrendTrack(trackId, slider.items, direction, "비교 가능한 상품이 없습니다.");
+      }, 5000);
+    }
+
+    // 좌우 버튼은 각 영역을 독립적으로 이동합니다.
     document.querySelectorAll(".trend-prev, .trend-next").forEach(button => {
       button.addEventListener("click", () => {
-        const track = document.getElementById(button.dataset.target);
-        if (!track) return;
-        const direction = button.classList.contains("trend-next") ? 1 : -1;
-        track.scrollBy({ left: direction * track.clientWidth * 0.8, behavior: "smooth" });
+        const trackId = button.dataset.target;
+        const slider = trendSliderState[trackId];
+        if (!slider || !slider.items.length) return;
+        slider.index = (slider.index + (button.classList.contains("trend-next") ? 1 : -1) + slider.items.length) % slider.items.length;
+        renderTrendTrack(trackId, slider.items, trackId === "trendHighTrack" ? "down" : "up", "비교 가능한 상품이 없습니다.");
+        startTrendTimer(trackId);
+      });
+    });
+
+    document.querySelectorAll(".trend-view-all").forEach(button => {
+      button.addEventListener("click", () => {
+        const trackId = button.dataset.target;
+        const slider = trendSliderState[trackId];
+        if (!slider) return;
+        slider.expanded = !slider.expanded;
+        renderTrendTrack(trackId, slider.items, trackId === "trendHighTrack" ? "down" : "up", "비교 가능한 상품이 없습니다.");
       });
     });
 
@@ -1283,7 +1319,7 @@ function getYearPriceDropItems() {
             })}.`
           : "";
         statusMessage.textContent =
-          `가격 파일에서 ${state.prices.length}개 가격 항목을 확인했습니다. 품목명이 일치하고 유효한 가격이 있는 경우에만 가격을 표시합니다.${updatedText}`;
+          `가격 파일에서 ${state.prices.length}개 가격 항목을 확인했습니다. 품목명이 일치하고 유효한 가격이 있는 경우에만 표시합니다. 주말 가격은 JSON에 저장된 가장 최근 조사 가격과 조사일을 기준으로 표시해야 하며, 별도 과거 데이터가 없으면 임의로 보정하지 않습니다.${updatedText}`;
       } else {
         statusTitle.textContent = "실제 가격 미연결";
         statusMessage.textContent =
@@ -1354,14 +1390,12 @@ function getYearPriceDropItems() {
       const source = document.createElement("div");
       source.className = "price-source";
       if (currentPrice !== null) {
-        const dateLabel = row.asOf
-          ? String(row.asOf)
-          : "조사일 확인 필요";
-        const priceBasis = row.priceToday == null
-          ? "표시 가격은 전일 가격"
-          : "당일 가격";
-        source.textContent =
-          `출처: KAMIS · ${dateLabel} · ${priceBasis}`;
+        const dateValue = row.asOf ?? row.priceDate ?? row.price_date ?? row.regday ?? row.date ?? null;
+        const dateLabel = dateValue ? String(dateValue) : "조사일 확인 필요";
+        const basis = row.priceBasis ?? row.price_basis ?? row.priceStatus ?? row.price_status ?? "";
+        source.textContent = basis
+          ? `출처: KAMIS · ${dateLabel} · ${String(basis)}`
+          : `출처: KAMIS · 조사일 ${dateLabel}`;
       } else {
         source.textContent =
           "KAMIS에서 일치하는 가격을 확인하지 못했습니다.";
