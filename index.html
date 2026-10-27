@@ -1063,6 +1063,7 @@ const seasonalFoods = [
     }
 
    
+
 function getYearPriceDropItems() {
   if (!state.pricesLoaded || !Array.isArray(state.prices)) {
     return [];
@@ -1072,9 +1073,9 @@ function getYearPriceDropItems() {
 
   state.prices.forEach(row => {
     const name = String(getItemName(row) || "").trim();
-    const currentPrice = parsePrice(getPriceValue(row));
 
-    // 작년 가격: JSON에 실제 존재하는 필드 사용
+    // 현재 가격과 전년 가격을 각각 확인
+    const currentPrice = parsePrice(getPriceValue(row));
     const yearAgoPrice = parsePrice(
       row.priceYearAgo ??
       row.price_year_ago ??
@@ -1083,31 +1084,26 @@ function getYearPriceDropItems() {
       row.year_ago_price
     );
 
-    if (!name || currentPrice === null) return;
-
-    // 1. 저장된 연간 변동률 우선 사용
-    const rawRate = row.pctYear;
-    let rate = null;
-
+    // 현재 가격 또는 전년 가격이 없으면 비교 대상에서 제외
     if (
-      rawRate !== null &&
-      rawRate !== undefined &&
-      String(rawRate).trim() !== "" &&
-      Number.isFinite(Number(rawRate))
+      !name ||
+      currentPrice === null ||
+      yearAgoPrice === null
     ) {
-      rate = Number(rawRate);
-    } else if (yearAgoPrice !== null && yearAgoPrice > 0) {
-      // 2. 변동률이 없으면 작년 가격으로 계산
-      rate =
-        ((currentPrice - yearAgoPrice) / yearAgoPrice) * 100;
+      return;
     }
 
-    // 비교할 자료가 없으면 추천 목록에서 제외
+    // 실제 가격 두 개로 전년 대비 변동률 계산
+    const rate =
+      ((currentPrice - yearAgoPrice) / yearAgoPrice) * 100;
+
     if (!Number.isFinite(rate)) return;
 
+    // 동일한 상품명은 한 번만 표시
     const key = normalizeText(name);
+    if (!key || byName.has(key)) return;
 
-    const item = {
+    byName.set(key, {
       name,
       emoji: getFoodEmoji(
         name,
@@ -1116,16 +1112,12 @@ function getYearPriceDropItems() {
       category: row.category || getCategoryForFood(name),
       row,
       rate
-    };
-
-    // 동일한 상품명은 한 번만 표시
-    if (!byName.has(key)) {
-      byName.set(key, item);
-    }
+    });
   });
 
   return Array.from(byName.values());
 }
+
 
 
     function createTrendCard(item, direction) {
