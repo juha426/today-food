@@ -5,64 +5,7 @@ a{color:inherit;text-decoration:none}button,select,input{font:inherit}button{cur
 @media(max-width:720px){.wrap{padding:16px 14px 28px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{padding:14px}.hero{padding:22px 18px}.section-head h2{font-size:20px}.recommend-card{flex-basis:165px}.recommend-heading h2{font-size:20px}}
 @media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.price{font-size:17px}}
 </style></head><body><main class="wrap"><section class="hero"><div class="eyebrow">PRICE PICKS · 가격 비교</div><h1>추천해요</h1><p>가격이 조회되는 전체 식재료를 확인하고, 작년 대비 등락률을 기준으로 정렬해 보세요.</p></section>
-
-    <section class="section">
-      <div class="container">
-                <!-- 작년 대비 가격 하락 상품 -->
-        <section class="price-trend-section" aria-label="작년 대비 가격 변동 상품">
-          <div class="recommendation-heading">
-            <h2>이 상품은 어때요?</h2>
-            <p>월 이동과 관계없이 작년 대비 가격 변동이 큰 상품을 보여드려요.</p>
-          </div>
-          <div class="price-trend-grid">
-
-            <!-- 가격 하락률이 큰 상품 -->
-            <article class="trend-panel trend-panel-high">
-              <div class="trend-heading">
-                <div>
-                  <span class="trend-eyebrow">PRICE DROP</span>
-                  <h3>📉 작년보다 저렴해요</h3>
-                  <p>작년 대비 가격 하락률이 큰 상품</p>
-                </div>
-                <div class="trend-controls">
-                  <button type="button" class="trend-prev" data-target="trendHighTrack"
-                    aria-label="가격 하락률이 큰 상품 이전">‹</button>
-                  <button type="button" class="trend-next" data-target="trendHighTrack"
-                    aria-label="가격 하락률이 큰 상품 다음">›</button>
-                  <button type="button" class="trend-view-all" data-target="trendHighTrack" aria-expanded="false">전체 보기</button>
-                </div>
-              </div>
-              <div class="trend-track" id="trendHighTrack" aria-live="polite">
-                <div class="trend-empty">가격 정보를 불러오는 중입니다.</div>
-              </div>
-            </article>
-
-            <!-- 작년 대비 가격 상승률이 큰 상품 -->
-            <article class="trend-panel trend-panel-low">
-              <div class="trend-heading">
-                <div>
-                  <span class="trend-eyebrow">PRICE INCREASE</span>
-                  <h3>📈 작년보다 비싸요</h3>
-                  <p>작년 대비 가격 상승률이 큰 상품</p>
-                </div>
-                <div class="trend-controls">
-                  <button type="button" class="trend-prev" data-target="trendLowTrack"
-                    aria-label="가격 상승률이 큰 상품 이전">‹</button>
-                  <button type="button" class="trend-next" data-target="trendLowTrack"
-                    aria-label="가격 상승률이 큰 상품 다음">›</button>
-                  <button type="button" class="trend-view-all" data-target="trendLowTrack" aria-expanded="false">전체 보기</button>
-                </div>
-              </div>
-              <div class="trend-track" id="trendLowTrack" aria-live="polite">
-                <div class="trend-empty">가격 정보를 불러오는 중입니다.</div>
-              </div>
-            </article>
-
-          </div>
-          <p class="trend-notice">
-            KAMIS 가격 기준 · 현재 가격과 작년 가격이 모두 확인되는 상품만 비교합니다. 가격 조사일은 데이터에 포함된 날짜를 표시합니다.
-          </p>
-        </section>
+<section aria-labelledby="recommendTitle"><div class="recommend-heading"><h2 id="recommendTitle">이 상품은 어때요?</h2><div class="muted">현재 가격이 확인되는 상품을 골라봤어요. 아래 카테고리 필터와 별도로 표시됩니다.</div></div><div class="recommend-strip" id="recommendStrip"><div class="empty">추천 상품을 불러오고 있어요.</div></div></section>
 <div class="toolbar"><button class="chip active" data-filter="all">전체</button><button class="chip" data-filter="농산물">농산물</button><button class="chip" data-filter="수산물">수산물</button><button class="chip" data-filter="축산물">축산물</button></div>
 <section><div class="section-head"><div><h2>전체 상품</h2><div class="muted">현재 가격이 조회되는 상품을 모두 표시합니다.</div></div><label class="muted" for="sortOrder">등락률 정렬　<select id="sortOrder" class="btn" aria-label="등락률 정렬"><option value="asc">오름차순 (낮은 순)</option><option value="desc">내림차순 (높은 순)</option></select></label></div><div class="muted" id="itemCount" style="margin-bottom:12px">불러오는 중</div><div class="grid" id="itemGrid"><div class="empty">가격 데이터를 불러오고 있어요.</div></div></section>
 <div class="notice" id="priceNotice">작년 가격이 없는 상품도 현재 가격은 표시합니다. 등락률은 작년 가격이 확인되는 상품에 한해 계산됩니다.</div><p class="footer-note">가격 정보는 연결된 KAMIS 데이터 기준이며, 가격이 없거나 조사일이 확인되지 않는 경우 별도로 안내합니다. 제철 시기는 산지와 품종에 따라 달라질 수 있습니다.</p></main><nav class="bottom-nav" aria-label="주요 페이지">
