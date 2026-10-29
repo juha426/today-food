@@ -16,7 +16,7 @@ a{color:inherit;text-decoration:none}button,select,input{font:inherit}button{cur
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 99999;
   align-items: center;
   justify-content: center;
   padding: 16px;
@@ -29,75 +29,48 @@ a{color:inherit;text-decoration:none}button,select,input{font:inherit}button{cur
 .seasonal-popup__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(28, 35, 27, 0.55);
+  background: rgba(0, 0, 0, 0.55);
 }
 
 .seasonal-popup__panel {
   position: relative;
+  z-index: 1;
   width: min(100%, 1000px);
   height: min(80vh, 720px);
   overflow: auto;
   background: #faf8f0;
-  border-radius: 22px;
-  box-shadow: 0 16px 60px #0003;
+  border-radius: 20px;
 }
 
 .seasonal-popup__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 20px 24px;
+  padding: 20px;
   border-bottom: 1px solid #e8e5d9;
 }
 
 .seasonal-popup__header h2 {
   margin: 0;
-  font-size: 22px;
-}
-
-.seasonal-popup__header button {
-  border: 0;
-  background: transparent;
-  font-size: 24px;
-  cursor: pointer;
 }
 
 .seasonal-popup__content {
   min-height: 300px;
-  padding: 24px;
 }
 
-body.popup-locked {
-  overflow: hidden;
-}
-
-@media (max-width: 600px) {
-  .seasonal-popup {
-    padding: 8px;
-  }
-
-  .seasonal-popup__panel {
-    height: 88vh;
-    border-radius: 16px;
-  }
-
-  .seasonal-popup__header {
-    padding: 16px;
-  }
-
-  .seasonal-popup__header h2 {
-    font-size: 18px;
-  }
-}
- 
     </style>
 
   </head>
   <body>
     <main class="wrap">
       <section class="hero"><div class="eyebrow">IN SEASON · 제철 식재료</div><h1><span id="monthTitle"></span> 제철이요</h1><p>이번 달에 즐기기 좋은 제철 식재료를 모았어요. 달을 바꾸며 계절별 식재료를 둘러보세요.</p></section>
-      <button type="button" class="btn primary" id="openSeasonalPopup"> 월별 제철 식재료 도감 </button>
+      <button  
+        type="button"
+        class="btn primary"
+        onclick="document.getElementById('seasonalPopup').classList.add('is-open'); document.getElementById('seasonalPopup').setAttribute('aria-hidden', 'false');"
+        >
+        월별 제철 식재료 도감
+      </button>
       <div class="toolbar"><button class="btn" id="prevMonth">← 이전 달</button><button class="btn primary" id="currentMonth">이번 달</button><button class="btn" id="nextMonth">다음 달 →</button><select id="categoryFilter" class="chip" aria-label="카테고리 선택"><option value="all">전체 식재료</option><option value="농산물">농산물</option><option value="수산물">수산물</option></select></div>
       <div class="section-head"><div><h2 id="seasonalHeading">이번 달 식재료</h2><div class="muted">제철 시기 기준으로 소개하며, 가격은 확인 가능한 경우에만 표시합니다.</div></div><span class="muted" id="seasonalCount"></span></div><div class="grid" id="seasonalGrid"><div class="empty">제철 식재료를 불러오는 중이에요.</div></div>
       <div class="notice">제철 시기는 지역, 품종, 재배 방식에 따라 달라질 수 있어요. 목록은 식재료 선택을 돕기 위한 참고 정보입니다.</div><p class="footer-note">가격 정보는 연결된 KAMIS 데이터 기준이며, 가격이 없거나 조사일이 확인되지 않는 경우 별도로 안내합니다. 제철 시기는 산지와 품종에 따라 달라질 수 있습니다.</p></main><nav class="bottom-nav" aria-label="주요 페이지">
@@ -155,22 +128,30 @@ const seasonalData=(typeof seasonalFoods!=='undefined'&&Array.isArray(seasonalFo
 <div id="seasonalPopup" class="seasonal-popup" aria-hidden="true">
   <div class="seasonal-popup__backdrop" id="closeSeasonalBackdrop"></div>
 
-  <section
-    class="seasonal-popup__panel"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="seasonalPopupTitle"
-  >
+  <div id="seasonalPopup" class="seasonal-popup" aria-hidden="true">
+  <div
+    class="seasonal-popup__backdrop"
+    onclick="closeSeasonalPopup()"
+  ></div>
+
+  <section class="seasonal-popup__panel" role="dialog" aria-modal="true">
     <header class="seasonal-popup__header">
-      <h2 id="seasonalPopupTitle">월별 제철 식재료 도감</h2>
-      <button type="button" id="closeSeasonalPopup" aria-label="팝업 닫기">
+      <h2>월별 제철 식재료 도감</h2>
+      <button type="button" onclick="closeSeasonalPopup()" aria-label="닫기">
         ✕
       </button>
     </header>
 
-    <div class="seasonal-popup__content">
-      <!-- 추후 월별 식재료 콘텐츠 추가 -->
-    </div>
+    <div class="seasonal-popup__content"></div>
   </section>
+</div>
+
+<script>
+function closeSeasonalPopup() {
+  const popup = document.getElementById('seasonalPopup');
+  popup.classList.remove('is-open');
+  popup.setAttribute('aria-hidden', 'true');
+}
+</script>
 </div>
 </body></html>
