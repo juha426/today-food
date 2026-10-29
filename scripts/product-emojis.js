@@ -4,7 +4,10 @@
   const aliases = { '감귤':'귤', '한라봉':'귤', '천혜향':'귤', '홍로':'사과' };
   window.productEmojiReady = fetch(DATA_URL, { cache: 'no-cache' })
     .then(response => { if (!response.ok) throw new Error('이모지 데이터 HTTP ' + response.status); return response.json(); })
-    .then(data => { emojiMap = data || {}; })
+    .then(data => {
+      emojiMap = data || {};
+      window.dispatchEvent(new CustomEvent('product-emojis-ready'));
+    })
     .catch(error => { console.error('[product-emojis]', error); });
   window.getProductEmoji = function (name, fallback = '🥬', category = '') {
     const raw = String(name || '').trim();
