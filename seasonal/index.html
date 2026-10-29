@@ -18,4 +18,27 @@ const money=v=>new Intl.NumberFormat('ko-KR').format(v)+'원';function num(v){if
 function priceFor(food){const f=prices.find(p=>String(p.name||p.item_name||'').includes(food.name)||food.name.includes(String(p.name||p.item_name||'___')));if(!f)return null;return num(f.priceToday??f.price??f.dpr1??f.currentPrice)}
 function render(){document.querySelector('#monthTitle').textContent=`${month}월`;document.querySelector('#seasonalHeading').textContent=`${month}월 제철 식재료`;const list=foods.filter(f=>(f.months||[]).includes(month)&&(category==='all'||f.category===category));document.querySelector('#seasonalCount').textContent=`${list.length}개`;document.querySelector('#seasonalGrid').innerHTML=list.length?list.map(f=>{const p=priceFor(f);const icon=(f.category||'').includes('수산')?'🐟':({'딸기':'🍓','감귤':'🍊','사과':'🍎','배추':'🥬','무':'🥕','고구마':'🍠','밤':'🌰','배':'🍐','감':'🟠','시금치':'🥬'}[f.name]||'🌱');return `<article class="card"><div class="emoji">${icon}</div><div class="muted">${esc(f.category||'제철 식재료')}</div><h3>${esc(f.name)}</h3><p class="muted">${esc(f.description||'제철에 즐기기 좋은 식재료')}</p><div class="price">${p===null?'가격 정보 없음':money(p)}</div>${p===null?'<div class="muted">현재 가격 데이터에서 확인되지 않았어요.</div>':''}</article>`}).join(''):'<div class="empty">선택한 달에 등록된 제철 식재료가 없어요.</div>'}
 document.querySelector('#prevMonth').addEventListener('click',()=>{month=month===1?12:month-1;render()});document.querySelector('#nextMonth').addEventListener('click',()=>{month=month===12?1:month+1;render()});document.querySelector('#currentMonth').addEventListener('click',()=>{month=new Date().getMonth()+1;render()});document.querySelector('#categoryFilter').addEventListener('change',e=>{category=e.target.value;render()});
-const seasonalData=(typeof seasonalFoods!=='undefined'&&Array.isArray(seasonalFoods))?seasonalFoods:((typeof seasonalFoodItems!=='undefined'&&Array.isArray(seasonalFoodItems))?seasonalFoodItems:((window.seasonalFoods&&Array.isArray(window.seasonalFoods))?window.seasonalFoods:((window.seasonalFoodItems&&Array.isArray(window.seasonalFoodItems))?window.seasonalFoodItems:[])));fetch('../data/prices.json').then(r=>{if(!r.ok)throw new Error('prices.json HTTP '+r.status);return r.json()}).then(j=>{prices=Array.isArray(j)?j:(j.items||j.data?.items||j.data?.item||[]);foods=seasonalData;render();if(!foods.length)document.querySelector('#seasonalGrid').innerHTML='<div class="empty">제철 데이터 파일은 불러왔지만 배열을 찾지 못했어요. data 파일의 변수명을 확인해 주세요.</div>'}).catch(error=>{foods=seasonalData;render();if(!foods.length)document.querySelector('#seasonalGrid').innerHTML='<div class="empty">제철 데이터를 찾지 못했어요. seasonal-foods.js의 경로 또는 변수명을 확인해 주세요.</div>';console.error('제철 페이지 데이터 로딩 오류:',error)});if(seasonalData.length){foods=seasonalData;render()}</script></body></html>
+const seasonalData=(typeof seasonalFoods!=='undefined'&&Array.isArray(seasonalFoods))?seasonalFoods:((typeof seasonalFoodItems!=='undefined'&&Array.isArray(seasonalFoodItems))?seasonalFoodItems:((window.seasonalFoods&&Array.isArray(window.seasonalFoods))?window.seasonalFoods:((window.seasonalFoodItems&&Array.isArray(window.seasonalFoodItems))?window.seasonalFoodItems:[])));fetch('../data/prices.json').then(r=>{if(!r.ok)throw new Error('prices.json HTTP '+r.status);return r.json()}).then(j=>{prices=Array.isArray(j)?j:(j.items||j.data?.items||j.data?.item||[]);foods=seasonalData;render();if(!foods.length)document.querySelector('#seasonalGrid').innerHTML='<div class="empty">제철 데이터 파일은 불러왔지만 배열을 찾지 못했어요. data 파일의 변수명을 확인해 주세요.</div>'}).catch(error=>{foods=seasonalData;render();if(!foods.length)document.querySelector('#seasonalGrid').innerHTML='<div class="empty">제철 데이터를 찾지 못했어요. seasonal-foods.js의 경로 또는 변수명을 확인해 주세요.</div>';console.error('제철 페이지 데이터 로딩 오류:',error)});if(seasonalData.length){foods=seasonalData;render()}</script>
+
+<div id="seasonalPopup" class="seasonal-popup" aria-hidden="true">
+  <div class="seasonal-popup__backdrop" id="closeSeasonalBackdrop"></div>
+
+  <section
+    class="seasonal-popup__panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="seasonalPopupTitle"
+  >
+    <header class="seasonal-popup__header">
+      <h2 id="seasonalPopupTitle">월별 제철 식재료 도감</h2>
+      <button type="button" id="closeSeasonalPopup" aria-label="팝업 닫기">
+        ✕
+      </button>
+    </header>
+
+    <div class="seasonal-popup__content">
+      <!-- 추후 월별 식재료 콘텐츠 추가 -->
+    </div>
+  </section>
+</div>
+</body></html>
