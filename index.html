@@ -1606,6 +1606,11 @@ function getYearPriceDropItems() {
     });
     // 가격 다시 불러오기 버튼
     loadButton.addEventListener("click", loadPrices);
+    // 공통 이모지 데이터 로딩이 끝나면 첫 화면의 기본 이모지를 갱신합니다.
+    window.addEventListener('product-emojis-ready', () => {
+      renderProducts();
+      renderYearPriceTrends();
+    });
     // 페이지 초기화 및 가격 자동 조회
     renderMonth();
     renderStatus();
