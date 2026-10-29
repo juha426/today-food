@@ -5,6 +5,7 @@ a{color:inherit;text-decoration:none}button,select,input{font:inherit}button{cur
 @media(max-width:720px){.wrap{padding:16px 14px 28px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{padding:14px}.hero{padding:22px 18px}.section-head h2{font-size:20px}}
 @media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.price{font-size:17px}}
 </style></head><body><main class="wrap"><section class="hero"><div class="eyebrow">IN SEASON · 제철 식재료</div><h1><span id="monthTitle"></span> 제철이요</h1><p>이번 달에 즐기기 좋은 제철 식재료를 모았어요. 달을 바꾸며 계절별 식재료를 둘러보세요.</p></section>
+<button type="button" class="btn primary" id="openSeasonalPopup"> 월별 제철 식재료 도감 </button>
 <div class="toolbar"><button class="btn" id="prevMonth">← 이전 달</button><button class="btn primary" id="currentMonth">이번 달</button><button class="btn" id="nextMonth">다음 달 →</button><select id="categoryFilter" class="chip" aria-label="카테고리 선택"><option value="all">전체 식재료</option><option value="농산물">농산물</option><option value="수산물">수산물</option></select></div>
 <div class="section-head"><div><h2 id="seasonalHeading">이번 달 식재료</h2><div class="muted">제철 시기 기준으로 소개하며, 가격은 확인 가능한 경우에만 표시합니다.</div></div><span class="muted" id="seasonalCount"></span></div><div class="grid" id="seasonalGrid"><div class="empty">제철 식재료를 불러오는 중이에요.</div></div>
 <div class="notice">제철 시기는 지역, 품종, 재배 방식에 따라 달라질 수 있어요. 목록은 식재료 선택을 돕기 위한 참고 정보입니다.</div><p class="footer-note">가격 정보는 연결된 KAMIS 데이터 기준이며, 가격이 없거나 조사일이 확인되지 않는 경우 별도로 안내합니다. 제철 시기는 산지와 품종에 따라 달라질 수 있습니다.</p></main><nav class="bottom-nav" aria-label="주요 페이지">
