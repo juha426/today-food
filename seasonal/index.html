@@ -131,6 +131,10 @@ function renderSeasonalOverview(selectedMonth){
   title.textContent=`${selectedMonth}월 제철 식재료`;
   count.textContent=`${list.length}개 식재료`;
   cloud.innerHTML=list.length?list.map(f=>{const fallback=(f.category||'').includes('수산')?'🐟':'🌱';const icon=window.getProductEmoji?window.getProductEmoji(f.name,fallback,f.category||''):fallback;return `<div class="seasonal-food-item"><span class="food-icon" aria-hidden="true">${icon}</span><span>${esc(f.name)}</span></div>`}).join(''):'<div class="seasonal-overview-empty">이 달에 등록된 제철 식재료가 없어요.</div>';
+  // 월이 바뀔 때마다 스크롤 위치를 맨 위로 초기화합니다.
+  const scrollArea=cloud.closest('.seasonal-overview-content');
+  if(scrollArea) scrollArea.scrollTop=0;
+  cloud.scrollTop=0;
   tabs.querySelectorAll('[data-overview-month]').forEach(button=>button.addEventListener('click',()=>renderSeasonalOverview(Number(button.dataset.overviewMonth))));
 }
 const overviewModal=document.querySelector('#seasonalOverviewModal');
