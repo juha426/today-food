@@ -1125,38 +1125,22 @@ const seasonalFoods = [
    
 function getYearPriceDropItems() {
   if (!state.pricesLoaded || !Array.isArray(state.prices)) return [];
-
-  const byName = new Map();
+  const byProduct = new Map();
   state.prices.forEach(row => {
     const name = String(getItemName(row) || "").trim();
     const currentPrice = parsePrice(getPriceValue(row));
-    const yearAgoPrice = parsePrice(
-      row.priceYearAgo ?? row.price_year_ago ?? row.dpr6 ??
-      row.yearAgoPrice ?? row.year_ago_price ?? row.priceLastYear ??
-      row.price_last_year
-    );
-
-    // 전년 가격이 없는 상품은 pctYear 값만으로 추정하지 않습니다.
+    const yearAgoPrice = parsePrice(row.priceYearAgo ?? row.price_year_ago ?? row.dpr6 ?? row.yearAgoPrice ?? row.year_ago_price ?? row.priceLastYear ?? row.price_last_year);
     if (!name || currentPrice === null || yearAgoPrice === null || yearAgoPrice <= 0) return;
-
     const rate = ((currentPrice - yearAgoPrice) / yearAgoPrice) * 100;
     if (!Number.isFinite(rate)) return;
-
-    const key = normalizeText(name);
-    if (!key) return;
-    const item = {
-      name,
-      emoji: getFoodEmoji(name, row.category || getCategoryForFood(name)),
-      category: row.category || getCategoryForFood(name),
-      row,
-      rate,
-      yearAgoPrice
-    };
-    const existing = byName.get(key);
-    // 중복 품목이면 유효한 현재 가격을 가진 첫 항목을 유지합니다.
-    if (!existing) byName.set(key, item);
+    const variety = String(row.variety ?? row.kind_name ?? row.kindName ?? row.variety_name ?? row.varietyName ?? "").trim();
+    const grade = String(row.grade ?? row.rank ?? row.product_grade ?? row.productGrade ?? row.grade_name ?? row.gradeName ?? "").trim();
+    const category = String(row.category ?? row.item_category_name ?? row.itemCategoryName ?? getCategoryForFood(name)).trim();
+    const key = [normalizeText(name), normalizeText(variety), normalizeText(grade), normalizeText(category)].join("|");
+    if (!key || byProduct.has(key)) return;
+    byProduct.set(key, { name, emoji: getFoodEmoji(name, category), category, variety, grade, row, rate, yearAgoPrice });
   });
-  return Array.from(byName.values());
+  return Array.from(byProduct.values());
 }
 
     function createTrendCard(item, direction) {
@@ -1168,8 +1152,8 @@ function getYearPriceDropItems() {
       emoji.setAttribute("aria-hidden", "true");
       const name = document.createElement("h4");
       name.className = "trend-name";
-      name.textContent = item.name;
-      name.title = item.name;
+      name.textContent = [item.name, item.variety, item.grade].filter(Boolean).join(" · ");
+      name.title = name.textContent;
       const rate = document.createElement("div");
       rate.className = "trend-rate";
       rate.classList.add(direction === "down" ? "down" : "up");
