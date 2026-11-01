@@ -1095,6 +1095,25 @@ const seasonalFoods = [
      * 가격 JSON의 카테고리는 '채소류', '과일류', '수산물' 등으로
      * 저장되므로 화면의 농산물/수산물 분류와 별도로 처리합니다.
      */
+
+    // 등급이 여러 개면 품질 등급이 가장 높은 행을 대표 상품으로 선택합니다.
+    function gradePriority(value) {
+      const g = String(value ?? "").replace(/\s/g, "").toLowerCase();
+      if (!g) return 0;
+      if (/특품|특상|1\+\+|1\+/.test(g)) return 6;
+      if (/^특$|^상$|상품|^1등급$|1등급/.test(g)) return 5;
+      if (/중품|^중$|^2등급$|2등급/.test(g)) return 3;
+      if (/하품|^하$|^3등급$|3등급/.test(g)) return 1;
+      return 2;
+    }
+    function bestGradeRow(rows) {
+      return rows.reduce((best, row) => {
+        const grade = String(row.grade ?? row.rank ?? row.product_grade ?? row.productGrade ?? row.grade_name ?? row.gradeName ?? "").trim();
+        const bestGrade = best ? String(best.grade ?? best.rank ?? best.product_grade ?? best.productGrade ?? best.grade_name ?? best.gradeName ?? "").trim() : "";
+        return !best || gradePriority(grade) > gradePriority(bestGrade) ? row : best;
+      }, null);
+    }
+
     function findPrice(foodName) {
       const target = normalizeText(foodName);
       if (!target) return null;
@@ -1106,16 +1125,10 @@ const seasonalFoods = [
           target.includes(rowName)
         );
       });
-      // 품목명이 정확하게 일치하는 유효한 가격을 우선합니다.
-      const exact = matches.find(row =>
-        normalizeText(getItemName(row)) === target &&
-        parsePrice(getPriceValue(row)) !== null
-      );
-      if (exact) return exact;
-      // 정확한 일치가 없으면 이름이 유사한 유효 가격을 사용합니다.
-      return matches.find(row =>
-        parsePrice(getPriceValue(row)) !== null
-      ) || null;
+      // 정확한 품목명을 우선하고, 등급이 여러 개면 가장 높은 등급 1개만 선택합니다.
+      const exact = matches.filter(row => normalizeText(getItemName(row)) === target && parsePrice(getPriceValue(row)) !== null);
+      if (exact.length) return bestGradeRow(exact);
+      return bestGradeRow(matches.filter(row => parsePrice(getPriceValue(row)) !== null));
     }
     // 상품명에 맞는 이모지. 별도 이모지가 없으면 기본 식재료 아이콘을 사용합니다.
     function getFoodEmoji(name, category) {
@@ -1136,9 +1149,11 @@ function getYearPriceDropItems() {
     const variety = String(row.variety ?? row.kind_name ?? row.kindName ?? row.variety_name ?? row.varietyName ?? "").trim();
     const grade = String(row.grade ?? row.rank ?? row.product_grade ?? row.productGrade ?? row.grade_name ?? row.gradeName ?? "").trim();
     const category = String(row.category ?? row.item_category_name ?? row.itemCategoryName ?? getCategoryForFood(name)).trim();
-    const key = [normalizeText(name), normalizeText(variety), normalizeText(grade), normalizeText(category)].join("|");
-    if (!key || byProduct.has(key)) return;
-    byProduct.set(key, { name, emoji: getFoodEmoji(name, category), category, variety, grade, row, rate, yearAgoPrice });
+    const key = [normalizeText(name), normalizeText(variety), normalizeText(category)].join("|");
+    if (!key) return;
+    const candidate = { name, emoji: getFoodEmoji(name, category), category, variety, grade, row, rate, yearAgoPrice };
+    const existing = byProduct.get(key);
+    if (!existing || gradePriority(grade) > gradePriority(existing.grade)) byProduct.set(key, candidate);
   });
   return Array.from(byProduct.values());
 }
@@ -1152,7 +1167,7 @@ function getYearPriceDropItems() {
       emoji.setAttribute("aria-hidden", "true");
       const name = document.createElement("h4");
       name.className = "trend-name";
-      name.textContent = [item.name, item.variety, item.grade].filter(Boolean).join(" · ");
+      name.textContent = [item.name, item.variety].filter(Boolean).join(" · ");
       name.title = name.textContent;
       const rate = document.createElement("div");
       rate.className = "trend-rate";
