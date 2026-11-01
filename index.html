@@ -1167,7 +1167,12 @@ function getYearPriceDropItems() {
       emoji.setAttribute("aria-hidden", "true");
       const name = document.createElement("h4");
       name.className = "trend-name";
-      name.textContent = [item.name, item.variety].filter(Boolean).join(" · ");
+      // 이모지 아래 상품명 영역에서는 품종명만 표시하고 단위 표기는 제외합니다.
+      const varietyName = String(item.variety || "")
+        .replace(/\s*[(/·,]\s*\d+(?:\.\d+)?\s*(?:kg|g|그램|킬로그램|개입|개|입|망|단|포기|마리|미|속|봉|팩|박스|상자)\s*[)]?\s*$/i, "")
+        .replace(/\s*\d+(?:\.\d+)?\s*(?:kg|g|그램|킬로그램|개입|개|입|망|단|포기|마리|미|속|봉|팩|박스|상자)\s*$/i, "")
+        .trim();
+      name.textContent = [item.name, varietyName].filter(Boolean).join(" · ");
       name.title = name.textContent;
       const rate = document.createElement("div");
       rate.className = "trend-rate";
@@ -1179,9 +1184,8 @@ function getYearPriceDropItems() {
       const price = document.createElement("div");
       price.className = "trend-price";
       const currentPrice = parsePrice(getPriceValue(item.row));
-      const unit = item.row.unit ? ` / ${item.row.unit}` : "";
       const yearAgoPrice = parsePrice(item.yearAgoPrice);
-      price.textContent = `현재 ${formatPrice(currentPrice)}원${unit} · 작년 ${formatPrice(yearAgoPrice)}원`;
+      price.textContent = `현재 ${formatPrice(currentPrice)}원 · 작년 ${formatPrice(yearAgoPrice)}원`;
       const date = item.row.asOf ?? item.row.priceDate ?? item.row.price_date ?? item.row.regday ?? item.row.date ?? null;
       if (date) {
         const dateLabel = document.createElement("div");
