@@ -1172,7 +1172,7 @@ function getYearPriceDropItems() {
         .replace(/\s*[(/·,]\s*\d+(?:\.\d+)?\s*(?:kg|g|그램|킬로그램|개입|개|입|망|단|포기|마리|미|속|봉|팩|박스|상자)\s*[)]?\s*$/i, "")
         .replace(/\s*\d+(?:\.\d+)?\s*(?:kg|g|그램|킬로그램|개입|개|입|망|단|포기|마리|미|속|봉|팩|박스|상자)\s*$/i, "")
         .trim();
-      name.textContent = [item.name, varietyName].filter(Boolean).join(" · ");
+      name.textContent = item.name; // 이모지 아래 상품명에는 품종명을 표시하지 않습니다.
       name.title = name.textContent;
       const rate = document.createElement("div");
       rate.className = "trend-rate";
