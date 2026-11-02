@@ -1186,14 +1186,18 @@ function getYearPriceDropItems() {
       const currentPrice = parsePrice(getPriceValue(item.row));
       const yearAgoPrice = parsePrice(item.yearAgoPrice);
       price.textContent = `현재 ${formatPrice(currentPrice)}원 · 작년 ${formatPrice(yearAgoPrice)}원`;
+      const varietyLabel = document.createElement("div");
+      varietyLabel.className = "trend-price";
+      varietyLabel.textContent = item.variety
+        ? `${item.name}(${item.variety}) 기준 가격`
+        : `${item.name} 기준 가격`;
       const date = item.row.asOf ?? item.row.priceDate ?? item.row.price_date ?? item.row.regday ?? item.row.date ?? null;
+      card.append(emoji, name, rate, price, varietyLabel);
       if (date) {
         const dateLabel = document.createElement("div");
         dateLabel.className = "trend-price";
         dateLabel.textContent = `조사일 ${String(date)}`;
-        card.append(emoji, name, rate, price, dateLabel);
-      } else {
-        card.append(emoji, name, rate, price);
+        card.appendChild(dateLabel);
       }
       return card;
     }
@@ -1247,8 +1251,22 @@ function getYearPriceDropItems() {
         return;
       }
       const items = getYearPriceDropItems();
-      const drops = items.filter(item => item.rate < 0).sort((a, b) => a.rate - b.rate);
-      const increases = items.filter(item => item.rate > 0).sort((a, b) => b.rate - a.rate);
+      // 상품명 기준으로 품종을 하나만 선택합니다.
+      // 하락 영역은 가장 큰 하락률, 상승 영역은 가장 큰 상승률의 품종을 대표로 노출합니다.
+      const byProduct = new Map();
+      items.forEach(item => {
+        const key = [normalizeText(item.name), normalizeText(item.category)].join("|");
+        if (!byProduct.has(key)) byProduct.set(key, []);
+        byProduct.get(key).push(item);
+      });
+      const drops = Array.from(byProduct.values())
+        .map(rows => rows.filter(item => item.rate < 0).sort((a, b) => a.rate - b.rate)[0])
+        .filter(Boolean)
+        .sort((a, b) => a.rate - b.rate);
+      const increases = Array.from(byProduct.values())
+        .map(rows => rows.filter(item => item.rate > 0).sort((a, b) => b.rate - a.rate)[0])
+        .filter(Boolean)
+        .sort((a, b) => b.rate - a.rate);
       renderTrendTrack("trendHighTrack", drops, "down", "작년 가격이 확인되는 저렴한 상품이 없습니다.");
       renderTrendTrack("trendLowTrack", increases, "up", "작년 가격이 확인되는 비싼 상품이 없습니다.");
       startTrendTimer("trendHighTrack");
