@@ -164,10 +164,30 @@ main:not(.wrap){max-width:1120px;margin:0 auto}
  .section-head h2,.recommend-heading h2{font-size:19px!important}
 }
 @media(max-width:420px){.site-nav{gap:8px}.site-nav a{font-size:10px}}
-</style></head><body><header class="site-header"><div class="site-header-inner">
-<a class="site-brand" href="../"><span class="site-brand-mark">●</span><span>오늘 뭐먹지?<small>제철 식재료부터 장보기까지</small></span></a>
-<nav class="site-nav" aria-label="주요 메뉴"><a href="../">홈</a><a href="../recommend/">추천해요</a><a href="../seasonal/">제철이요</a><a href="../recipe/">오늘식탁</a></nav>
-</div></header><main class="wrap"><section class="hero"><div class="eyebrow">IN SEASON · 제철 식재료</div><h1><span id="monthTitle"></span> 제철이요</h1><p>이번 달에 즐기기 좋은 제철 식재료를 모았어요. 달을 바꾸며 계절별 식재료를 둘러보세요.</p></section>
+</style>
+<style>
+.site-header-desktop{background:#fbfaf5;border-bottom:1px solid #e7e7de;}
+.site-header-inner{max-width:1200px!important;height:100px;min-height:100px!important;padding:0 24px!important;}
+.site-brand{display:flex;align-items:center;gap:10px;color:#304d37!important;text-decoration:none!important;}
+.site-brand-logo,.site-brand-logo-link img{display:block;width:40px;height:40px;object-fit:contain;flex:0 0 40px;}
+.site-brand-copy{display:flex;flex-direction:column;line-height:1.25;}
+.site-brand-copy strong{font-size:22px;font-weight:900;letter-spacing:-.04em;}
+.site-brand-copy small{font-size:11px;color:#7b8278;margin-top:4px;font-weight:500;}
+.site-nav{display:flex;align-items:center;gap:36px!important;height:100%;}
+.site-nav a{position:relative;display:flex;align-items:center;height:100%;padding:0 2px!important;border:0!important;font-size:14px!important;font-weight:650!important;color:#72796e!important;text-decoration:none;}
+.site-nav a.active{color:#304d37!important;font-weight:850!important;}
+.site-nav a.active:after{content:"";position:absolute;left:0;right:0;bottom:26px;height:3px;background:#42664b;border-radius:2px;}
+.site-brand-logo-link{display:inline-flex;align-items:center;margin-right:10px;}
+@media(max-width:759px){.site-header-desktop{display:none!important;}}
+</style></head><body><header class="site-header site-header-desktop">
+  <div class="site-header-inner">
+    <a class="site-brand" href="../seasonal/" aria-label="오늘 뭐먹지 홈">
+      <img class="site-brand-logo" src="/today-food/브랜드 심볼.png" alt="오늘 뭐먹지 브랜드 심볼">
+      <span class="site-brand-copy"><strong>오늘 뭐먹지?</strong><small>제철 식재료부터 장보기까지</small></span>
+    </a>
+    <nav class="site-nav" aria-label="주요 메뉴"><a href="../" class="" >홈</a><a href="../recommend/" class="" >추천해요</a><a href="../seasonal/" class="active" aria-current="page">제철이요</a><a href="../recipe/" class="" >오늘식탁</a></nav>
+  </div>
+</header><main class="wrap"><section class="hero"><div class="eyebrow">IN SEASON · 제철 식재료</div><h1><span id="monthTitle"></span> 제철이요</h1><p>이번 달에 즐기기 좋은 제철 식재료를 모았어요. 달을 바꾸며 계절별 식재료를 둘러보세요.</p></section>
 <div class="toolbar"><button class="btn" id="prevMonth">← 이전 달</button><button class="btn primary" id="currentMonth">이번 달</button><button class="btn" id="nextMonth">다음 달 →</button><select id="categoryFilter" class="chip" aria-label="카테고리 선택"><option value="all">전체 식재료</option><option value="농산물">농산물</option><option value="수산물">수산물</option></select></div>
 <div style="display:flex;justify-content:flex-end;margin:-4px 0 18px"><button type="button" class="seasonal-overview-open" id="openSeasonalOverview">🗓️ 월별 제철 식재료 한눈에 보기</button></div>
 <div class="section-head"><div><h2 id="seasonalHeading">이번 달 식재료</h2><div class="muted">제철 시기 기준으로 소개하며, 가격은 확인 가능한 경우에만 표시합니다.</div></div><span class="muted" id="seasonalCount"></span></div><div class="grid" id="seasonalGrid"><div class="empty">제철 식재료를 불러오는 중이에요.</div></div>
