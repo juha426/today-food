@@ -874,6 +874,21 @@ header .header-caption{color:#7b8278!important}
 header{background:rgba(250,249,244,.96)!important;border-bottom:1px solid #e9e8df!important}
 .hero .hero-card{background:#eaf0e5!important;border-radius:20px!important;padding:32px!important}
 .hero .hero-card h1{color:#2f4f39!important}
+</style>
+<style>
+.site-header-desktop{background:#fbfaf5;border-bottom:1px solid #e7e7de;}
+.site-header-inner{max-width:1200px!important;height:100px;min-height:100px!important;padding:0 24px!important;}
+.site-brand{display:flex;align-items:center;gap:10px;color:#304d37!important;text-decoration:none!important;}
+.site-brand-logo,.site-brand-logo-link img{display:block;width:40px;height:40px;object-fit:contain;flex:0 0 40px;}
+.site-brand-copy{display:flex;flex-direction:column;line-height:1.25;}
+.site-brand-copy strong{font-size:22px;font-weight:900;letter-spacing:-.04em;}
+.site-brand-copy small{font-size:11px;color:#7b8278;margin-top:4px;font-weight:500;}
+.site-nav{display:flex;align-items:center;gap:36px!important;height:100%;}
+.site-nav a{position:relative;display:flex;align-items:center;height:100%;padding:0 2px!important;border:0!important;font-size:14px!important;font-weight:650!important;color:#72796e!important;text-decoration:none;}
+.site-nav a.active{color:#304d37!important;font-weight:850!important;}
+.site-nav a.active:after{content:"";position:absolute;left:0;right:0;bottom:26px;height:3px;background:#42664b;border-radius:2px;}
+.site-brand-logo-link{display:inline-flex;align-items:center;margin-right:10px;}
+@media(max-width:759px){.site-header-desktop{display:none!important;}}
 </style></head>
 <body>
   <header>
@@ -881,7 +896,7 @@ header{background:rgba(250,249,244,.96)!important;border-bottom:1px solid #e9e8d
       <a class="logo" href="#" aria-label="오늘 뭐먹지 홈">
         오늘 뭐먹지<span>?</span>
       </a>
-      <div class="header-caption">제철 식재료부터 장보기까지</div><nav class="site-nav" aria-label="주요 메뉴"><a href="./" class="active">홈</a><a href="./recommend/">추천해요</a><a href="./seasonal/">제철이요</a><a href="./recipe/">오늘식탁</a></nav>
+      <div class="header-caption">제철 식재료부터 장보기까지</div><nav class="site-nav" aria-label="주요 메뉴"><a href="./" class="active" aria-current="page">홈</a><a href="../recommend/" class="" >추천해요</a><a href="../seasonal/" class="" >제철이요</a><a href="../recipe/" class="" >오늘식탁</a></nav>
     </div>
   </header>
   <main>
