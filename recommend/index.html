@@ -24,7 +24,78 @@ body{padding-bottom:calc(82px + env(safe-area-inset-bottom, 0px))}
 .bottom-nav a:focus-visible{outline:2px solid var(--primary-dark);outline-offset:-2px}.footer-note{margin:24px 0;color:var(--muted);font-size:12px}
 @media(max-width:720px){.wrap{padding:16px 14px 28px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{padding:14px}.hero{padding:22px 18px}.section-head h2{font-size:20px}.recommend-card{flex-basis:165px}.recommend-heading h2{font-size:20px}.price-trend-grid{grid-template-columns:1fr}.trend-panel{padding:14px}.trend-card{flex-basis:135px}}
 @media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.price{font-size:17px}}
-</style></head><body><main class="wrap"><section class="hero"><div class="eyebrow">PRICE PICKS · 가격 비교</div><h1>추천해요</h1><p>가격이 조회되는 전체 식재료를 확인하고, 작년 대비 등락률을 기준으로 정렬해 보세요.</p></section>
+</style><style>
+/* ===== 오늘 뭐먹지 디자인 리뉴얼 : Figma 참고 스타일 ===== */
+:root{
+ --primary:#42664b;--primary-dark:#2f4f39;--primary-light:#eaf0e5;
+ --accent:#d98d4b;--bg:#f8f7f0;--surface:#fff;--text:#26372c;
+ --muted:#7b8278;--border:#e8e8df;--danger:#b84235;--radius:14px;
+}
+html{scroll-behavior:smooth}
+body{background:#f8f7f0!important;color:#26372c!important;font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif!important;line-height:1.55}
+a{color:inherit}
+.site-header{position:sticky;top:0;z-index:100;background:rgba(250,249,244,.96);border-bottom:1px solid #e9e8df;backdrop-filter:blur(10px)}
+.site-header-inner{max-width:1120px;margin:0 auto;min-height:64px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.site-brand{display:flex;align-items:center;gap:9px;color:#2f4f39;font-weight:900;text-decoration:none;font-size:18px;white-space:nowrap}
+.site-brand-mark{width:30px;height:30px;border-radius:50%;background:#42664b;color:white;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+.site-brand small{display:block;font-size:10px;font-weight:500;color:#788276;line-height:1.2}
+.site-nav{display:flex;align-items:center;gap:24px}
+.site-nav a{font-size:13px;color:#697267;text-decoration:none;padding:8px 0;border-bottom:2px solid transparent}
+.site-nav a.active,.site-nav a:hover{color:#2f4f39;border-color:#42664b;font-weight:800}
+.wrap{max-width:1120px!important;margin:0 auto!important;padding:28px 24px 42px!important}
+main:not(.wrap){max-width:1120px;margin:0 auto}
+.hero{border-radius:20px!important;background:#eaf0e5!important;margin:20px 0 24px!important;overflow:hidden}
+.hero h1{color:#2f4f39!important;font-size:clamp(28px,3.6vw,38px)!important;letter-spacing:-.04em}
+.hero p,.hero-description{color:#657264!important}
+.eyebrow{color:#42664b!important;font-size:11px!important;font-weight:800!important;letter-spacing:.08em!important}
+.section-head,.recommend-heading,.recommend-heading h2{color:#2f4f39}
+.section-head{margin:28px 0 14px!important}
+.section-head h2,.recommend-heading h2,.recommend-heading h2{font-size:22px!important;letter-spacing:-.03em}
+.toolbar{gap:8px!important}
+.btn,.chip,.toolbar button,.toolbar select{border-radius:999px!important;border:1px solid #e4e5dc!important;background:#fff!important;color:#526052!important;padding:8px 15px!important;font-size:12px!important}
+.btn.primary,.chip.active,.toolbar button.active{background:#42664b!important;color:#fff!important;border-color:#42664b!important}
+.grid{gap:14px!important}
+.card,.recommend-card,.trend-card{background:#fff!important;border:1px solid #e8e8df!important;border-radius:14px!important;box-shadow:0 2px 8px rgba(35,55,38,.035)!important}
+.card{padding:16px!important}
+.card h3{color:#2f4f39!important;font-size:18px!important}
+.card .emoji{display:flex;align-items:center;justify-content:center;background:#f5f4ed;border-radius:10px;min-height:78px;font-size:42px!important}
+.price{color:#2f4f39!important}
+.muted{color:#7b8278!important}
+.empty{border:1px dashed #d7d9cf!important;background:#fff!important;border-radius:14px!important}
+.notice{background:#f7eee3!important;color:#85613d!important;border-radius:12px!important}
+.footer-note{color:#858b80!important}
+.price-trend-section{margin:22px 0 28px!important}
+.price-trend-grid{gap:14px!important}
+.trend-panel{border:1px solid #e6e7de!important;border-radius:16px!important;padding:16px!important}
+.trend-panel-high{background:#edf2e8!important}
+.trend-panel-low{background:#fbf0e5!important}
+.trend-heading h3{color:#2f4f39!important}
+.trend-card{flex:0 0 150px!important;padding:12px!important}
+.trend-emoji{display:flex;align-items:center;justify-content:center;background:#f5f4ed;border-radius:10px;height:62px;font-size:32px!important}
+.trend-name{font-weight:800!important;color:#2f4f39!important}
+.trend-rate.down{color:#42664b!important}
+.trend-rate.up{color:#b85c3b!important}
+.search-input{border-radius:12px!important;border-color:#e5e5dc!important}
+.bottom-nav{background:rgba(255,255,255,.97)!important;border-top:1px solid #e8e8df!important}
+.bottom-nav a.active{color:#2f4f39!important;background:#eaf0e5!important}
+@media(min-width:760px){body{padding-bottom:0!important}.bottom-nav{display:none!important}}
+@media(max-width:759px){
+ .site-header-inner{padding:0 15px;min-height:58px}
+ .site-nav{gap:12px}
+ .site-nav a{font-size:11px}
+ .wrap{padding:16px 14px 28px!important}
+ .hero{margin:12px 0 18px!important}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+ .card{padding:11px!important}
+ .card h3{font-size:15px!important}
+ .card .emoji{min-height:64px;font-size:34px!important}
+ .section-head h2,.recommend-heading h2{font-size:19px!important}
+}
+@media(max-width:420px){.site-nav{gap:8px}.site-nav a{font-size:10px}}
+</style></head><body><header class="site-header"><div class="site-header-inner">
+<a class="site-brand" href="../"><span class="site-brand-mark">●</span><span>오늘 뭐먹지?<small>제철 식재료부터 장보기까지</small></span></a>
+<nav class="site-nav" aria-label="주요 메뉴"><a href="../">홈</a><a href="../recommend/">추천해요</a><a href="../seasonal/">제철이요</a><a href="../recipe/">오늘식탁</a></nav>
+</div></header><main class="wrap"><section class="hero"><div class="eyebrow">PRICE PICKS · 가격 비교</div><h1>추천해요</h1><p>가격이 조회되는 전체 식재료를 확인하고, 작년 대비 등락률을 기준으로 정렬해 보세요.</p></section>
 <section aria-labelledby="recommendTitle"><div class="recommend-heading"><h2 id="recommendTitle">이 상품은 어때요?</h2><div class="muted">홈 화면처럼 작년 대비 가격이 크게 변한 상품을 모았어요. 아래 카테고리 필터와 별도로 표시됩니다.</div></div><section class="price-trend-section" aria-label="작년 대비 가격 변동 상품"><div class="price-trend-grid"><article class="trend-panel trend-panel-high"><div class="trend-heading"><div><span class="trend-eyebrow">PRICE DROP</span><h3>📉 작년보다 저렴해요</h3><p>작년 대비 가격 하락률이 큰 상품</p></div><div class="trend-controls"><button type="button" class="trend-prev" data-target="trendHighTrack" aria-label="저렴한 상품 이전">‹</button><button type="button" class="trend-next" data-target="trendHighTrack" aria-label="저렴한 상품 다음">›</button></div></div><div class="trend-track" id="trendHighTrack" aria-live="polite"><div class="trend-empty">가격 정보를 불러오는 중입니다.</div></div></article><article class="trend-panel trend-panel-low"><div class="trend-heading"><div><span class="trend-eyebrow">PRICE INCREASE</span><h3>📈 작년보다 비싸요</h3><p>작년 대비 가격 상승률이 큰 상품</p></div><div class="trend-controls"><button type="button" class="trend-prev" data-target="trendLowTrack" aria-label="비싼 상품 이전">‹</button><button type="button" class="trend-next" data-target="trendLowTrack" aria-label="비싼 상품 다음">›</button></div></div><div class="trend-track" id="trendLowTrack" aria-live="polite"><div class="trend-empty">가격 정보를 불러오는 중입니다.</div></div></article></div></section></section>
 <div class="toolbar"><button class="chip active" data-filter="all">전체</button><button class="chip" data-filter="농산물">농산물</button><button class="chip" data-filter="수산물">수산물</button><button class="chip" data-filter="축산물">축산물</button></div>
 <div class="search-row"><input id="productSearch" class="search-input" type="search" placeholder="상품명 검색 (예: 오이, 열무, 사과)" aria-label="전체 상품 검색" autocomplete="off"><button type="button" id="clearSearch" class="search-clear">지우기</button></div>
