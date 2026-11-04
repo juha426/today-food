@@ -17,7 +17,78 @@
 a{color:inherit;text-decoration:none}button,select,input{font:inherit}button{cursor:pointer}.wrap{max-width:1080px;margin:0 auto;padding:24px 18px 36px}.eyebrow{color:var(--primary-dark);font-size:13px;font-weight:800;letter-spacing:.04em}.hero{padding:26px 24px;border-radius:24px;background:linear-gradient(135deg,#edf3e9,#fff5e8);margin-bottom:22px}.hero h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:7px 0 10px}.hero p{margin:0;color:#596258;max-width:680px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:26px 0 14px}.section-head h2{font-size:22px;margin:0}.muted{color:var(--muted);font-size:13px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.chip,.btn{border:1px solid var(--border);background:#fff;border-radius:999px;padding:8px 13px;color:var(--text)}.chip.active,.btn.primary{background:var(--primary);border-color:var(--primary);color:white}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;min-width:0;box-shadow:0 4px 16px #27331b08}.emoji{font-size:32px}.card h3{margin:7px 0 4px;font-size:18px}.price{font-size:20px;font-weight:800;margin-top:10px}.empty{padding:28px;border:1px dashed #cdd5c8;border-radius:16px;color:var(--muted);text-align:center;background:#fff}.notice{padding:12px 14px;border-radius:12px;background:#fff7e9;color:#75552e;font-size:13px;margin-top:14px}.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:1000;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:8px max(10px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));background:rgba(255,255,255,.97);border-top:1px solid var(--border);box-shadow:0 -4px 18px rgba(30,50,30,.08);backdrop-filter:blur(12px)}.bottom-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:54px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:600;border-radius:12px;transition:color .18s ease,background .18s ease}.bottom-nav a .nav-icon{font-size:21px;line-height:1.2}.bottom-nav a.active{color:var(--primary-dark);background:var(--primary-light);font-weight:800}.footer-note{margin:24px 0;color:var(--muted);font-size:12px}
 @media(max-width:720px){.wrap{padding:16px 14px 28px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{padding:14px}.hero{padding:22px 18px}.section-head h2{font-size:20px}}
 @media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.price{font-size:17px}}
-</style></head><body><main class="wrap"><section class="hero"><div class="eyebrow">TODAY'S TABLE · 오늘의 한 끼</div><h1>오늘식탁</h1><p>오늘의 식재료 하나를 골라 부담 없이 만들 수 있는 메뉴를 추천해요. 재료가 많지 않고 과정이 단순한 집밥 위주로 구성했습니다.</p></section>
+</style><style>
+/* ===== 오늘 뭐먹지 디자인 리뉴얼 : Figma 참고 스타일 ===== */
+:root{
+ --primary:#42664b;--primary-dark:#2f4f39;--primary-light:#eaf0e5;
+ --accent:#d98d4b;--bg:#f8f7f0;--surface:#fff;--text:#26372c;
+ --muted:#7b8278;--border:#e8e8df;--danger:#b84235;--radius:14px;
+}
+html{scroll-behavior:smooth}
+body{background:#f8f7f0!important;color:#26372c!important;font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif!important;line-height:1.55}
+a{color:inherit}
+.site-header{position:sticky;top:0;z-index:100;background:rgba(250,249,244,.96);border-bottom:1px solid #e9e8df;backdrop-filter:blur(10px)}
+.site-header-inner{max-width:1120px;margin:0 auto;min-height:64px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.site-brand{display:flex;align-items:center;gap:9px;color:#2f4f39;font-weight:900;text-decoration:none;font-size:18px;white-space:nowrap}
+.site-brand-mark{width:30px;height:30px;border-radius:50%;background:#42664b;color:white;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+.site-brand small{display:block;font-size:10px;font-weight:500;color:#788276;line-height:1.2}
+.site-nav{display:flex;align-items:center;gap:24px}
+.site-nav a{font-size:13px;color:#697267;text-decoration:none;padding:8px 0;border-bottom:2px solid transparent}
+.site-nav a.active,.site-nav a:hover{color:#2f4f39;border-color:#42664b;font-weight:800}
+.wrap{max-width:1120px!important;margin:0 auto!important;padding:28px 24px 42px!important}
+main:not(.wrap){max-width:1120px;margin:0 auto}
+.hero{border-radius:20px!important;background:#eaf0e5!important;margin:20px 0 24px!important;overflow:hidden}
+.hero h1{color:#2f4f39!important;font-size:clamp(28px,3.6vw,38px)!important;letter-spacing:-.04em}
+.hero p,.hero-description{color:#657264!important}
+.eyebrow{color:#42664b!important;font-size:11px!important;font-weight:800!important;letter-spacing:.08em!important}
+.section-head,.recommend-heading,.recommend-heading h2{color:#2f4f39}
+.section-head{margin:28px 0 14px!important}
+.section-head h2,.recommend-heading h2,.recommend-heading h2{font-size:22px!important;letter-spacing:-.03em}
+.toolbar{gap:8px!important}
+.btn,.chip,.toolbar button,.toolbar select{border-radius:999px!important;border:1px solid #e4e5dc!important;background:#fff!important;color:#526052!important;padding:8px 15px!important;font-size:12px!important}
+.btn.primary,.chip.active,.toolbar button.active{background:#42664b!important;color:#fff!important;border-color:#42664b!important}
+.grid{gap:14px!important}
+.card,.recommend-card,.trend-card{background:#fff!important;border:1px solid #e8e8df!important;border-radius:14px!important;box-shadow:0 2px 8px rgba(35,55,38,.035)!important}
+.card{padding:16px!important}
+.card h3{color:#2f4f39!important;font-size:18px!important}
+.card .emoji{display:flex;align-items:center;justify-content:center;background:#f5f4ed;border-radius:10px;min-height:78px;font-size:42px!important}
+.price{color:#2f4f39!important}
+.muted{color:#7b8278!important}
+.empty{border:1px dashed #d7d9cf!important;background:#fff!important;border-radius:14px!important}
+.notice{background:#f7eee3!important;color:#85613d!important;border-radius:12px!important}
+.footer-note{color:#858b80!important}
+.price-trend-section{margin:22px 0 28px!important}
+.price-trend-grid{gap:14px!important}
+.trend-panel{border:1px solid #e6e7de!important;border-radius:16px!important;padding:16px!important}
+.trend-panel-high{background:#edf2e8!important}
+.trend-panel-low{background:#fbf0e5!important}
+.trend-heading h3{color:#2f4f39!important}
+.trend-card{flex:0 0 150px!important;padding:12px!important}
+.trend-emoji{display:flex;align-items:center;justify-content:center;background:#f5f4ed;border-radius:10px;height:62px;font-size:32px!important}
+.trend-name{font-weight:800!important;color:#2f4f39!important}
+.trend-rate.down{color:#42664b!important}
+.trend-rate.up{color:#b85c3b!important}
+.search-input{border-radius:12px!important;border-color:#e5e5dc!important}
+.bottom-nav{background:rgba(255,255,255,.97)!important;border-top:1px solid #e8e8df!important}
+.bottom-nav a.active{color:#2f4f39!important;background:#eaf0e5!important}
+@media(min-width:760px){body{padding-bottom:0!important}.bottom-nav{display:none!important}}
+@media(max-width:759px){
+ .site-header-inner{padding:0 15px;min-height:58px}
+ .site-nav{gap:12px}
+ .site-nav a{font-size:11px}
+ .wrap{padding:16px 14px 28px!important}
+ .hero{margin:12px 0 18px!important}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+ .card{padding:11px!important}
+ .card h3{font-size:15px!important}
+ .card .emoji{min-height:64px;font-size:34px!important}
+ .section-head h2,.recommend-heading h2{font-size:19px!important}
+}
+@media(max-width:420px){.site-nav{gap:8px}.site-nav a{font-size:10px}}
+</style></head><body><header class="site-header"><div class="site-header-inner">
+<a class="site-brand" href="../"><span class="site-brand-mark">●</span><span>오늘 뭐먹지?<small>제철 식재료부터 장보기까지</small></span></a>
+<nav class="site-nav" aria-label="주요 메뉴"><a href="../">홈</a><a href="../recommend/">추천해요</a><a href="../seasonal/">제철이요</a><a href="../recipe/">오늘식탁</a></nav>
+</div></header><main class="wrap"><section class="hero"><div class="eyebrow">TODAY'S TABLE · 오늘의 한 끼</div><h1>오늘식탁</h1><p>오늘의 식재료 하나를 골라 부담 없이 만들 수 있는 메뉴를 추천해요. 재료가 많지 않고 과정이 단순한 집밥 위주로 구성했습니다.</p></section>
 <section class="card" style="margin-bottom:20px"><div class="eyebrow">TODAY'S INGREDIENT</div><div style="display:flex;gap:16px;align-items:center;margin-top:8px"><div class="emoji" id="todayEmoji">🥬</div><div><h2 id="todayIngredient" style="margin:0;font-size:26px">오늘의 식재료</h2><div class="muted" id="todaySubtitle">제철 식재료로 메뉴를 골라보세요.</div></div></div><div class="toolbar"><button class="btn primary" id="changeRecipe">다른 식재료 보기</button><a class="btn" href="../seasonal/">제철 식재료 둘러보기</a></div></section>
 <div class="section-head"><div><h2 id="recipeTitle">오늘 추천 메뉴</h2><div class="muted">재료와 조리법을 확인해 보세요.</div></div></div><div class="grid" id="recipeGrid"></div>
 <div class="notice">레시피는 가정용 참고 정보입니다. 재료의 상태와 양에 따라 익힘 시간을 조절하고, 알레르기 유발 식품은 개인 상황에 맞게 제외해 주세요.</div><p class="footer-note">가격 정보는 연결된 KAMIS 데이터 기준이며, 가격이 없거나 조사일이 확인되지 않는 경우 별도로 안내합니다. 제철 시기는 산지와 품종에 따라 달라질 수 있습니다.</p></main><nav class="bottom-nav" aria-label="주요 페이지">
