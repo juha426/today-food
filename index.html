@@ -730,6 +730,17 @@
     .bottom-nav a.active { color: var(--primary-dark); background: #edf6ed; }
     .bottom-nav a:focus-visible { outline: 2px solid var(--primary-dark); outline-offset: -2px; }
 
+    @media (max-width: 759px) {
+    /* 모바일 헤더에서 메뉴 숨기기 */
+    .site-header-desktop .site-nav {
+      display: none !important;
+    }
+  
+    /* 모바일 헤더 영역 정렬 유지 */
+    .site-header-desktop .site-header-inner {
+      justify-content: center !important; /* 로고를 가운데 정렬하려면 center, 좌측 정렬하려면 flex-start */
+    }
+  }
   </style>
 <style>
 /* ===== 오늘 뭐먹지 디자인 리뉴얼 : Figma 참고 스타일 ===== */
