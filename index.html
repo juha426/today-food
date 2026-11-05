@@ -731,34 +731,34 @@
     .bottom-nav a:focus-visible { outline: 2px solid var(--primary-dark); outline-offset: -2px; }
 
     /* 모바일 헤더 기본 스타일 */
-  .site-header-mobile {
-    display: none;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(250, 249, 244, 0.96);
-    border-bottom: 1px solid #e9e8df;
-    backdrop-filter: blur(10px);
-  }
+   .site-header-mobile {
+     display: none;
+     position: sticky;
+     top: 0;
+     z-index: 100;
+     background: rgba(250, 249, 244, 0.96);
+     border-bottom: 1px solid #e9e8df;
+     backdrop-filter: blur(10px);
+   }
 
-  .site-header-mobile-inner {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* 로고 중앙 정렬 (좌측 정렬을 원하시면 flex-start로 변경) */
-    min-height: 56px;
-    padding: 0 16px;
-  }
+   .site-header-mobile-inner {
+     display: flex;
+     align-items: center;
+     justify-content: flex-start; /* 로고 중앙 정렬 (좌측 정렬을 원하시면 flex-start로 변경) */
+     min-height: 56px;
+     padding: 0 16px;
+   }
 
-  /* 화면 크기에 따른 헤더 전환 처리 */
-  @media (max-width: 759px) {
-   /* 모바일 화면: 데스크톱 헤더 숨기고 모바일 헤더 표시 */
-    .site-header-desktop {
-      display: none !important;
-    }
-    .site-header-mobile {
-      display: block !important;
-    }
-  }
+   /* 화면 크기에 따른 헤더 전환 처리 */
+   @media (max-width: 759px) {
+    /* 모바일 화면: 데스크톱 헤더 숨기고 모바일 헤더 표시 */
+     .site-header-desktop {
+       display: none !important;
+     }
+     .site-header-mobile {
+       display: block !important;
+     }
+   }
     
   </style>
 <style>
